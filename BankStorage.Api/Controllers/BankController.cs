@@ -55,7 +55,7 @@ namespace BankStorage.Api.Controllers
             await bankRepository.Delete(id);
             await bankRepository.Save();
 
-            return Ok($"Bank with the ID {id} has been deleted");
+            return Ok($"Банк с ID {id} удален");
         }
 
         // Удаление BIN кода из банка
@@ -71,7 +71,7 @@ namespace BankStorage.Api.Controllers
             await binCodeRepository.Delete(id);
             await binCodeRepository.Save();
 
-            return Ok($"Bin code with the ID {id} from Bank with the ID {bankId} has been deleted");
+            return Ok($"BIN код с ID {id} удален из банка с ID {bankId}");
         }
 
     }
