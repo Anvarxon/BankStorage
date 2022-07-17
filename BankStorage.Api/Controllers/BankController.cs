@@ -26,18 +26,6 @@ namespace BankStorage.Api.Controllers
         [Route("addBinCode")]
         public async Task<IActionResult> AddBinCode(Bin_Code binCode)
         {
-            if (binCode.BankId == 0)
-            {
-                return BadRequest("Не указан банк");
-            }
-            if (binCode.BinCode == null)
-            {
-                return BadRequest("Не указан код");
-            }
-            if (binCode.BinCode.Length > 6)
-            {
-                return BadRequest("Код не должен состоять больше 6 цифр");
-            }
             await binCodeRepository.Add(binCode);
             return Ok(binCode);
         }

@@ -16,7 +16,7 @@ namespace BankStorage.Domain.Models
         public string Name { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Logo is required")]
-        public byte[] Logo { get; set; } = null!;
+        public string Logo { get; set; } = null!;
 
         [JsonIgnore]
         public virtual ICollection<Bin_Code> Banks { get; set; }

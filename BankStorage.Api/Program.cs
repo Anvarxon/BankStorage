@@ -1,6 +1,9 @@
+using BankStorage.Api.DTO;
+using BankStorage.Api.Validators;
 using BankStorage.Domain;
 using BankStorage.Domain.Models;
 using BankStorage.Domain.Repositories;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +19,8 @@ var connectionString = builder.Configuration["ConnectionStrings:DefaultConnectio
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<IRepository<Bank, int>, BankRepository>();
 builder.Services.AddScoped<IRepository<Bin_Code, int>, BinCodeRepository>();
+builder.Services.AddScoped<IValidator<Bin_Code>, BinCodeValidator>();
+builder.Services.AddScoped<IValidator<CardDto>, CardValidator>();
 
 var app = builder.Build();
 
