@@ -3,6 +3,7 @@ using BankStorage.Api.Validators;
 using BankStorage.Domain;
 using BankStorage.Domain.Models;
 using BankStorage.Infrastructure;
+using BankStorage.Infrastructure.Context;
 using BankStorage.Infrastructure.Repositories;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
