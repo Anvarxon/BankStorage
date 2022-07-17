@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankStorage.Domain.Repositories
+namespace BankStorage.Infrastructure.Repositories
 {
     public interface IRepository<T1, T2> where T1 : class
     {

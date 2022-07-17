@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankStorage.Domain.Repositories
+namespace BankStorage.Infrastructure.Repositories
 {
     public class BankRepository : IRepository<Bank, int>
     {

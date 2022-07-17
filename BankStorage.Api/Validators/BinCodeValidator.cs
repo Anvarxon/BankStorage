@@ -9,16 +9,20 @@ namespace BankStorage.Api.Validators
         {
             RuleFor(c => c.BinCode)
                 .Cascade(CascadeMode.Stop)
+                .NotNull().WithMessage("Поле {PropertyName} не может быть null")
                 .NotEmpty().WithMessage("Необходимо заполнить поле {PropertyName}")
                 .Length(4, 6).WithMessage("Длина поля {PropertyName} должен быть от 4 до 6 знаков")
                 .Must(BeNumbersOnly).WithMessage("Поле {PropertyName} имеет не валидные значения. Введите только цифры.");
 
             RuleFor(c => c.CardType)
                 .Cascade(CascadeMode.Stop)
+                .NotNull().WithMessage("Поле {PropertyName} не может быть null")
+                .NotEmpty().WithMessage("Необходимо заполнить поле {PropertyName}")
                 .IsInEnum().WithMessage("Enum {PropertyName} не имеет данное значение.");
 
             RuleFor(c => c.BankId)
                 .Cascade(CascadeMode.Stop)
+                .NotNull().WithMessage("Поле (перечисление) {PropertyName} не может быть null")
                 .NotEmpty().WithMessage("Необходимо заполнить поле {PropertyName}")
                 .NotEqual(0).WithMessage("Поле {PropertyName} не должно равняться нулю");
         }

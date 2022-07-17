@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BankStorage.Domain.Migrations
+namespace BankStorage.Infrastructure.Migrations
 {
     public partial class Initial : Migration
     {
@@ -16,7 +15,7 @@ namespace BankStorage.Domain.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Logo = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                    Logo = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

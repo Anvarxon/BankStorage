@@ -10,7 +10,7 @@ namespace BankStorage.Domain.Models
     public class Bin_Code
     {
         public int Id { get; set; }
-        public string BinCode { get; set; }
+        public string BinCode { get; set; } = String.Empty;
         public CardTypes CardType { get; set; }
 
         public int BankId { get; set; }
