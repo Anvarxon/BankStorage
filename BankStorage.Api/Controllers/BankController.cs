@@ -18,16 +18,19 @@ namespace BankStorage.Api.Controllers
         private readonly IRepository<Bin_Code, int> binCodeRepository;
         private readonly IValidator<Bin_Code> _binCodeValidator;
         private readonly IValidator<CardDto> _cardValidator;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public BankController(IRepository<Bank, int> bankRepository, 
                               IRepository<Bin_Code, int> binCodeRepository,
                               IValidator<Bin_Code> binCodeValidator,
-                              IValidator<CardDto> cardValidator)
+                              IValidator<CardDto> cardValidator,
+                              IWebHostEnvironment webHostEnvironment)
         {
             this.bankRepository = bankRepository;
             this.binCodeRepository = binCodeRepository;
             this._binCodeValidator = binCodeValidator;
             this._cardValidator = cardValidator;
+            this._webHostEnvironment = webHostEnvironment;
         }
         
         
@@ -66,6 +69,31 @@ namespace BankStorage.Api.Controllers
 
 
         // BANK methods
+
+        //3.добавление банка + загрузка логотипа и сохранение на диск. Размер и разрешение изображения нужно проверять;
+        [HttpPost]
+        [Route("addBank")]
+        public async Task<IActionResult> AddBank(Bank bank)
+        {
+            if (bank.Logo == null)
+            {
+                return BadRequest("Логотип не загружен");
+            }
+            if (bank.Logo.Length > 2048 * 2048)
+            {
+                return BadRequest("Размер логотипа не должен превышать 1 мб");
+            }
+            string directoryPath = Path.Combine(_webHostEnvironment.ContentRootPath, "UploadedFiles");
+            string filePath = Path.Combine(bank.Logo);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await bank.Logo.CopyToAsync(stream);
+            }
+
+            bankRepository.Add(bank);
+            await bankRepository.Save();
+            return Ok(bank);
+        }
 
         // 7.Удаление выбранного банка
         [HttpDelete("{id}")]
