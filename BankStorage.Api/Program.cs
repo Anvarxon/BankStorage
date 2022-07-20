@@ -1,4 +1,6 @@
 using BankStorage.Api.DTO;
+using BankStorage.Api.Interfaces;
+using BankStorage.Api.Services;
 using BankStorage.Api.Validators;
 using BankStorage.Domain;
 using BankStorage.Domain.Models;
@@ -23,6 +25,7 @@ builder.Services.AddScoped<IRepository<Bank, int>, BankRepository>();
 builder.Services.AddScoped<IRepository<Bin_Code, int>, BinCodeRepository>();
 builder.Services.AddScoped<IValidator<Bin_Code>, BinCodeValidator>();
 builder.Services.AddScoped<IValidator<CardDto>, CardValidator>();
+builder.Services.AddTransient<IImageUploadService, ImageUploadService>();
 
 var app = builder.Build();
 
