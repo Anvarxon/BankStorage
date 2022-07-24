@@ -11,12 +11,9 @@ namespace BankStorage.Domain.Models
     public class Bank
     {
         public int Id { get; set; }
-
-        [Required(ErrorMessage = "Bank name is required")]
         public string Name { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Logo is required")]
-        public string Logo { get; set; } = null!;
+        public string Logo { get; set; } = string.Empty;
+        public List<Bin_Code> Bins { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<Bin_Code> Banks { get; set; }

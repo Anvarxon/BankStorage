@@ -21,11 +21,6 @@ namespace BankStorage.Infrastructure.Repositories
             return await _context.Bin_Codes.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Bin_Code>> GetAll()
-        {
-            return await _context.Bin_Codes.ToListAsync();
-        }
-
         public async Task<Bin_Code> Add(Bin_Code entity)
         {
             _context.Bin_Codes.Add(entity);
@@ -56,6 +51,11 @@ namespace BankStorage.Infrastructure.Repositories
         public async Task Save()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Bin_Code>> GetAll()
+        {
+            return await _context.Bin_Codes.ToListAsync();
         }
     }
 }

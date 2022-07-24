@@ -2,11 +2,13 @@
 using BankStorage.Api.Interfaces;
 using BankStorage.Domain;
 using BankStorage.Domain.Models;
+using BankStorage.Infrastructure.Context;
 using BankStorage.Infrastructure.Repositories;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net.Http;
 
 namespace BankStorage.Api.Controllers
@@ -19,13 +21,16 @@ namespace BankStorage.Api.Controllers
         private readonly IRepository<Bin_Code, int> binCodeRepository;
         private readonly IValidator<Bin_Code> _binCodeValidator;
         private readonly IValidator<CardDto> _cardValidator;
+        private readonly IValidator<Bank> _bankValidator;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IImageUploadService imageUploadService;
+        private readonly AppDbContext _context;
 
         public BankController(IRepository<Bank, int> bankRepository, 
                               IRepository<Bin_Code, int> binCodeRepository,
                               IValidator<Bin_Code> binCodeValidator,
                               IValidator<CardDto> cardValidator,
+                              IValidator<Bank> bankValidator,
                               IWebHostEnvironment webHostEnvironment,
                               IImageUploadService imageUploadService)
         {
@@ -33,6 +38,7 @@ namespace BankStorage.Api.Controllers
             this.binCodeRepository = binCodeRepository;
             this._binCodeValidator = binCodeValidator;
             this._cardValidator = cardValidator;
+            this._bankValidator = bankValidator;
             this._webHostEnvironment = webHostEnvironment;
             this.imageUploadService = imageUploadService;
         }
@@ -50,8 +56,23 @@ namespace BankStorage.Api.Controllers
             {
                 return BadRequest(result.Errors);
             }
-            
-            binCodeRepository.Add(binCode);
+
+            await binCodeRepository.Add(binCode);
+            return Ok(binCode);
+        }
+
+        // 6.редактирование BIN кода
+        [HttpPut]
+        [Route("editBinCode")]
+        public async Task<IActionResult> EditBinCode(Bin_Code binCode)
+        {
+            ValidationResult result = await _binCodeValidator.ValidateAsync(binCode);
+            if (!result.IsValid)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            await binCodeRepository.Update(binCode);
             return Ok(binCode);
         }
 
@@ -74,24 +95,34 @@ namespace BankStorage.Api.Controllers
 
         // BANK methods
 
-        //3.добавление банка + загрузка логотипа и сохранение на диск. Размер и разрешение изображения нужно проверять;
+        // Получить список всех банки и список их BIN с помощью метода .Include()
+        [HttpGet]
+        [Route("getAllBanksAndListOfBins")]
+        public async Task<IActionResult> GetAllBanksAndListOfBins(Bank bank)
+        {
+            var banks = await bankRepository.GetAll();
+            var bins = await binCodeRepository.GetAll();
+            var banksWithBins = _context.Banks.Include(b => b.Bins);
+            return Ok(banksWithBins);
+        }
+
+
+        // 3.добавление банка + загрузка логотипа и сохранение на диск. Размер и разрешение изображения нужно проверять;
         [HttpPost]
         [Route("addBank")]
         public async Task<IActionResult> AddBank(Bank bank)
         {
-            try
+            ValidationResult result = await _bankValidator.ValidateAsync(bank);
+            if (!result.IsValid)
             {
-                await imageUploadService.UploadFile();
-                
-                bankRepository.Add(bank);
-                await bankRepository.Save();
-                return Ok(bank);
+                return BadRequest(result.Errors);
             }
-            catch
-            {
-                return BadRequest();
-            }
+
+            await bankRepository.Add(bank);
+            return Ok(bank);
         }
+
+        
 
         // 7.Удаление выбранного банка
         [HttpDelete("{id}")]
