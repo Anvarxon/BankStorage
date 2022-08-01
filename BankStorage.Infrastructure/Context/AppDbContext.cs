@@ -23,7 +23,7 @@ namespace BankStorage.Infrastructure.Context
         {
             modelBuilder.Entity<Bin_Code>()
                 .HasOne(c => c.Bank)
-                .WithMany(e => e.Banks);
+                .WithMany(e => e.Bins);
         }
     }
 }

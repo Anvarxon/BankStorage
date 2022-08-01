@@ -21,7 +21,6 @@ namespace BankStorage.Api.Controllers
         private readonly IRepository<Bin_Code, int> binCodeRepository;
         private readonly IValidator<Bin_Code> _binCodeValidator;
         private readonly IValidator<CardDto> _cardValidator;
-        private readonly IValidator<Bank> _bankValidator;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IImageUploadService imageUploadService;
         private readonly AppDbContext _context;
@@ -30,20 +29,19 @@ namespace BankStorage.Api.Controllers
                               IRepository<Bin_Code, int> binCodeRepository,
                               IValidator<Bin_Code> binCodeValidator,
                               IValidator<CardDto> cardValidator,
-                              IValidator<Bank> bankValidator,
                               IWebHostEnvironment webHostEnvironment,
-                              IImageUploadService imageUploadService)
+                              IImageUploadService imageUploadService,
+                              AppDbContext context)
         {
             this.bankRepository = bankRepository;
             this.binCodeRepository = binCodeRepository;
             this._binCodeValidator = binCodeValidator;
             this._cardValidator = cardValidator;
-            this._bankValidator = bankValidator;
             this._webHostEnvironment = webHostEnvironment;
             this.imageUploadService = imageUploadService;
+            this._context = context;
         }
-        
-        
+
         // BIN methods
 
         // 4.Добавление BIN кода к выбранному банку
@@ -98,7 +96,7 @@ namespace BankStorage.Api.Controllers
         // Получить список всех банки и список их BIN с помощью метода .Include()
         [HttpGet]
         [Route("getAllBanksAndListOfBins")]
-        public async Task<IActionResult> GetAllBanksAndListOfBins(Bank bank)
+        public async Task<IActionResult> GetAllBanksAndListOfBins([FromQuery] Bank bank)
         {
             var banks = await bankRepository.GetAll();
             var bins = await binCodeRepository.GetAll();
@@ -110,19 +108,26 @@ namespace BankStorage.Api.Controllers
         // 3.добавление банка + загрузка логотипа и сохранение на диск. Размер и разрешение изображения нужно проверять;
         [HttpPost]
         [Route("addBank")]
-        public async Task<IActionResult> AddBank(Bank bank)
+        public async Task<IActionResult> AddBank([FromForm] Bank bank, IFormFile file)
         {
-            ValidationResult result = await _bankValidator.ValidateAsync(bank);
-            if (!result.IsValid)
-            {
-                return BadRequest(result.Errors);
-            }
+            file = Request.Form.Files.FirstOrDefault();
+            await imageUploadService.UploadFile(file);
 
             await bankRepository.Add(bank);
             return Ok(bank);
         }
 
-        
+        // 5.редактирование банка
+        [HttpPut]
+        [Route("editBank")]
+        public async Task<IActionResult> EditBank(Bank bank, IFormFile file)
+        {
+            file = Request.Form.Files.FirstOrDefault();
+            await imageUploadService.UploadFile(file);
+
+            await bankRepository.Update(bank);
+            return Ok(bank);
+        }
 
         // 7.Удаление выбранного банка
         [HttpDelete("{id}")]

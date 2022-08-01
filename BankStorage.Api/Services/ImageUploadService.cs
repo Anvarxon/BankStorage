@@ -18,6 +18,7 @@ namespace BankStorage.Api.Services
                 if (file.Length == 1 && file.ContentType == "image/png")
                 {
                     FileInfo fileInfo = new FileInfo(file.FileName);
+                    Bank bank = new Bank();
                     var newFileName = "Logo_" + DateTime.Now.TimeOfDay.Milliseconds + fileInfo.Extension;
 
                     string fileLocation = Path.GetFullPath(Path.Combine(webHostEnvironment.ContentRootPath, "/UploadedFiles/" + newFileName));
@@ -25,9 +26,11 @@ namespace BankStorage.Api.Services
                     {
                         Directory.CreateDirectory(fileLocation);
                     }
+                    
                     using (var fileStream = new FileStream(Path.Combine(fileLocation, file.FileName), FileMode.Create))
                     {
                         await file.CopyToAsync(fileStream);
+                        bank.Logo = fileLocation;
                     }
                     return fileLocation;
                 }
@@ -38,7 +41,7 @@ namespace BankStorage.Api.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("File Upload Failed", ex);
+                throw new Exception("Ошибка при сохранении файла", ex);
             }
         }
     }

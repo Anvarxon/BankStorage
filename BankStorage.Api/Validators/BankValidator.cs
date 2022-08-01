@@ -12,11 +12,6 @@ namespace BankStorage.Api.Validators
                 .NotNull().WithMessage("Поле {PropertyName} не может быть null")
                 .NotEmpty().WithMessage("Необходимо заполнить поле {PropertyName}");
 
-            RuleFor(c => c.Logo)
-                .Cascade(CascadeMode.Stop)
-                .NotNull().WithMessage("Поле {PropertyName} не может быть null")
-                .NotEmpty().WithMessage("Необходимо заполнить поле {PropertyName}")
-                .Must(c => c.Equals("image/jpeg") || c.Equals("image/jpg") || c.Equals("image/png")).WithMessage("Форматы только данного типа разрешены для загрузки: JPG, JPEG, PNG");
         }
     }
 }
