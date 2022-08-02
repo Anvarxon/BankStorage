@@ -15,13 +15,13 @@ namespace BankStorage.Api.Services
             
             try
             {
-                if (file.Length == 1 && file.ContentType == "image/png")
+                if (file.Length > 0 && file.ContentType == "image/png")
                 {
                     FileInfo fileInfo = new FileInfo(file.FileName);
                     Bank bank = new Bank();
                     var newFileName = "Logo_" + DateTime.Now.TimeOfDay.Milliseconds + fileInfo.Extension;
 
-                    string fileLocation = Path.GetFullPath(Path.Combine(webHostEnvironment.ContentRootPath, "/UploadedFiles/" + newFileName));
+                    string fileLocation = Path.GetFullPath(Path.Combine(webHostEnvironment.ContentRootPath, @"\UploadedFiles\"));
                     if (!Directory.Exists(fileLocation))
                     {
                         Directory.CreateDirectory(fileLocation);
